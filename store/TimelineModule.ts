@@ -17,7 +17,7 @@ export default class TimelineModule extends VuexModule {
     return this._statuses.map(s => new Status(s))
   }
 
-  @Action({ rawError: true  })
+  @Action({ rawError: true })
   async fetchGlobalTimeline() {
     const ss = await db
       .collectionGroup("statuses")
@@ -45,7 +45,7 @@ export default class TimelineModule extends VuexModule {
   }
 
   @Action
-  async postStatus(params: { text: string, currentUser: string}) {
+  async postStatus(params: { text: string, currentUser: string }) {
     db.collection(`users/${params.currentUser}/statuses`).add({
       userId: params.currentUser,
       text: params.text,

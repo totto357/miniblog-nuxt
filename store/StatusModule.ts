@@ -13,7 +13,7 @@ export interface StatusState {
 export default class StatusModule extends VuexModule implements StatusState {
   statuses: any[] = []
 
-  @Action({ rawError: true  })
+  @Action({ rawError: true })
   async fetchStatuses(currentUser: string) {
     const followings = await db.collection(`users/${currentUser}/followings`)
       .get()
