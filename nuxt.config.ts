@@ -1,6 +1,9 @@
 import { Configuration } from "@nuxt/types"
 
 const config: Configuration = {
+  head: {
+    title: "ミニブログ",
+  },
   mode: "spa",
   server: {
     port: 3000,
