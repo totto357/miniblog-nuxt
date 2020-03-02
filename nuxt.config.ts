@@ -16,6 +16,9 @@ const config: Configuration = {
     "@nuxtjs/vuetify",
     "@nuxt/typescript-build",
   ],
+  router: {
+    middleware: ["ready-auth"]
+  }
 }
 
 export default config
