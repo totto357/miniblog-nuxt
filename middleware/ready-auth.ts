@@ -10,7 +10,7 @@ export default function () {
   return new Promise((resolve) => {
     auth.onAuthStateChanged((user: User | null) => {
       authModule.onAuthStateChanged(user)
-      resolve(true)
+        .then(() => resolve(true))
     })
   })
 }
