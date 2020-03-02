@@ -1,26 +1,24 @@
 <template lang="pug">
-div.ma-6
-  v-row
-    v-col.py-0(cols="12")
-      v-btn.mb-3(block outlined @click="loadTimeline") タイムラインの更新
-      status.mb-3(v-for="status in statuses" :key="status.id" :status="status")
+v-row
+  v-col.py-0(cols="12")
+    v-timeline(:statuses="statuses" @click:update="loadTimeline")
 </template>
 
 <script lang="ts">
 import Vue from "vue"
 import { Component } from "nuxt-property-decorator"
-import Status from "@/components/status/Status.vue"
 import { timelineModule, authModule } from "@/store"
+import VTimeline from "@/components/timeline/Timeline.vue"
 
 @Component({
   components: {
-    Status,
+    VTimeline,
   }
 })
 export default class extends Vue {
 
-  fetch() {
-    timelineModule.fetchGlobalTimeline()
+  async fetch() {
+    await timelineModule.fetchGlobalTimeline({ clear: true })
   }
 
   get statuses() {
@@ -28,7 +26,9 @@ export default class extends Vue {
   }
 
   async loadTimeline() {
-    timelineModule.fetchGlobalTimeline()
+    this.$nuxt.$loading.start()
+    await timelineModule.fetchGlobalTimeline()
+    this.$nuxt.$loading.finish()
   }
 
 }

@@ -2,7 +2,10 @@ import { Mutation, Action, VuexModule, Module } from "vuex-module-decorators"
 import { db } from "@/plugins/firebase"
 
 import { StatusJson, Status } from "~/domain/models/Status"
-import { UserJson } from "~/domain/models/User"
+import { UserDocumentSnapshot, User } from "~/domain/models/User"
+import { DocumentReference } from "@google-cloud/firestore"
+
+const TIMELINE_LOAD_LIMIT = 30
 
 @Module({
   name: "TimelineModule",
@@ -17,45 +20,109 @@ export default class TimelineModule extends VuexModule {
     return this._statuses.map(s => new Status(s))
   }
 
+  get lastStatus() {
+    if (this.statuses.length === 0) {
+      return null
+    }
+    return this.statuses[this.statuses.length - 1]
+  }
+
   @Action({ rawError: true })
-  async fetchGlobalTimeline() {
-    const ss = await db
+  async fetchGlobalTimeline(params?: { clear: boolean }) {
+    if (params && params.clear) {
+      this.CLEAR_STATUSES()
+    }
+
+    const lastDate = this.lastStatus ? this.lastStatus.createdAt : new Date(99999999999999)
+    const statusesSnapShot = await db
       .collectionGroup("statuses")
       .orderBy("createdAt", "desc")
+      .startAfter(lastDate)
+      .limit(TIMELINE_LOAD_LIMIT)
       .get()
 
     const statuses = await Promise.all(
-      ss.docs.map(statusDoc =>
-        db.collection("users")
-          .doc(statusDoc.data().userId)
-          .get()
-          .then(userDoc => ({
+      statusesSnapShot.docs
+        .map(async statusDoc => {
+          const status = statusDoc.data()
+          const authorRef: DocumentReference = status.authorRef
+          const authorDoc: UserDocumentSnapshot = await authorRef.get()
+          const author = ({
+            id: authorDoc.id,
+            ...authorDoc.data(),
+          })
+          return {
             id: statusDoc.id,
-            text: statusDoc.data().text,
-            createdAt: statusDoc.data().createdAt,
-            user: {
-              uid: userDoc.id,
-              ...userDoc.data(),
-            } as UserJson,
-          }))
-      )
+            text: status.text,
+            createdAt: status.createdAt,
+            author,
+          }
+        })
     )
 
-    this.SET_STATUSES(statuses)
+    this.ADD_STATUSES(statuses)
   }
 
   @Action
-  async postStatus(params: { text: string, currentUser: string }) {
-    db.collection(`users/${params.currentUser}/statuses`).add({
-      userId: params.currentUser,
+  async fetchLocalTimeline(params: { currentUser: User, clear?: boolean }) {
+    if (params && params.clear) {
+      this.CLEAR_STATUSES()
+    }
+
+    // ステータスのIDリストの取得
+    const lastDate = this.lastStatus ? this.lastStatus.createdAt : new Date(99999999999999)
+    const timelineSnapShot = await db
+      .collection("users").doc(params.currentUser.id).collection("timeline")
+      .orderBy("createdAt", "desc")
+      .startAfter(lastDate)
+      .limit(TIMELINE_LOAD_LIMIT)
+      .get()
+
+    // ステータスの取得
+    let statuses: any = await Promise.all(
+      timelineSnapShot.docs.map(async timelineDoc => {
+        const statusRef: DocumentReference = timelineDoc.data().statusRef
+        const statusDoc = await statusRef.get()
+        const statusData = statusDoc.data() || {}
+
+        const authorRef: DocumentReference = statusData.authorRef
+        const authorDoc = await authorRef.get()
+        const author = ({
+          id: authorDoc.id,
+          ...authorDoc.data(),
+        })
+
+        return {
+          id: statusDoc.id,
+          text: statusData.text,
+          createdAt: statusData.createdAt,
+          author,
+        }
+      })
+    )
+
+    this.ADD_STATUSES(statuses)
+  }
+
+  @Action
+  async postStatus(params: { text: string, currentUser: User }) {
+    const uid = params.currentUser.id
+    const currentUserRef = db.collection("users").doc(uid)
+    currentUserRef.collection("statuses").add({
       text: params.text,
       createdAt: new Date(),
+      authorRef: currentUserRef,
     })
   }
 
   @Mutation
-  private SET_STATUSES(statuses: StatusJson[]) {
-    this._statuses = statuses
+  private CLEAR_STATUSES() {
+    this._statuses = []
+  }
+
+  @Mutation
+  private ADD_STATUSES(statuses: StatusJson[]) {
+    this._statuses.push(...statuses)
   }
 
 }

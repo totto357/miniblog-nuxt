@@ -5,19 +5,19 @@ export interface StatusJson {
   id: string
   text: string
   createdAt: firestore.Timestamp,
-  user: UserJson
+  author: UserJson
 }
 
 export class Status {
   id: string
   text: string
   createdAt: Date
-  user: User
+  author: User
 
   constructor(json: StatusJson) {
     this.id = json.id
     this.text = json.text
     this.createdAt = json.createdAt.toDate()
-    this.user = new User(json.user)
+    this.author = new User(json.author)
   }
 }

@@ -1,15 +1,55 @@
+import { DocumentSnapshot } from "@google-cloud/firestore"
+
 export interface UserJson {
-  uid: string
-  name: string
+  id?: string
+  name?: string
+  profile?: string
+  blogUrl?: string
+}
+
+export interface UserDocumentData {
+  name?: string
+  profile?: string
+  blogUrl?: string
+}
+
+export interface UserDocumentSnapshot extends DocumentSnapshot<UserDocumentData> {
+  id: string
+  data(): UserDocumentData | undefined
 }
 
 export class User {
-  uid: string
+  id: string
   name: string
+  profile: string
+  blogUrl: string
 
-  constructor(json: UserJson) {
-    this.uid = json.uid
-    this.name = json.name
+  constructor(json: UserJson = {}) {
+    this.id = json.id || ""
+    this.name = json.name || ""
+    this.profile = json.profile || ""
+    this.blogUrl = json.blogUrl || ""
   }
 
+  static fromDoc() {
+
+  }
+
+  toJson(): UserJson {
+    return {
+      id: this.id,
+      name: this.name,
+      profile: this.profile,
+      blogUrl: this.blogUrl,
+    }
+  }
+
+  clone() {
+    return new User({
+      id: this.id,
+      name: this.name,
+      profile: this.profile,
+      blogUrl: this.blogUrl,
+    })
+  }
 }

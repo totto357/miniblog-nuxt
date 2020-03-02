@@ -7,7 +7,7 @@ v-navigation-drawer(app clipped stateless :value="loggedIn")
         v-model="text"
         outlined
         label="テキスト"
-        counter
+        counter="140"
         :rules="textRules"
       )
     v-card-actions
