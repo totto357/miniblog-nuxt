@@ -32,8 +32,7 @@ div
             v-btn(
               block
               color="primary"
-              :loading="isLoading"
-              :disabled="isLoading || !valid"
+              :disabled="!valid"
               @click="join"
             ) 新規登録
 
