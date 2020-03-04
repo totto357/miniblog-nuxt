@@ -10,3 +10,7 @@
 yarn run dev
 # npm run dev
 ```
+### 本番環境
+
+https://nuxt-ts.web.app/
+
