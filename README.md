@@ -17,7 +17,7 @@ https://nuxt-ts.web.app/
 ### 所要時間
 
 - firebaseの調査 20
-- firestoreスキーマ設計 8
+- firestoreスキーマ設計 4
 - vuexの設計 4
 - functionsの作成 4
 - ログインの実装 8
