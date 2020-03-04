@@ -1,13 +1,13 @@
 import firebase from "firebase"
 
 const config = {
-  apiKey: "AIzaSyA1weyhTGkdD5KRNmA13vT9wqdG75dqbSg",
-  authDomain: "miniblog-nuxt.firebaseapp.com",
-  databaseURL: "https://miniblog-nuxt.firebaseio.com",
-  projectId: "miniblog-nuxt",
-  storageBucket: "miniblog-nuxt.appspot.com",
-  messagingSenderId: "196630679337",
-  appId: "1:196630679337:web:9757648ff876ca7102b138"
+  apiKey: "AIzaSyBlL6jeJByze2AiHP6a47aWhpVv4uFKrsE",
+  authDomain: "nuxt-ts.firebaseapp.com",
+  databaseURL: "https://nuxt-ts.firebaseio.com",
+  projectId: "nuxt-ts",
+  storageBucket: "nuxt-ts.appspot.com",
+  messagingSenderId: "217016186100",
+  appId: "1:217016186100:web:5f04ec9cda088601881aa1"
 }
 
 if (!firebase.apps.length) {
