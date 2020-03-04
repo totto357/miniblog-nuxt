@@ -4,6 +4,7 @@ div
     span {{ error.message }}
     v-btn(dark icon @click="showError = false")
       v-icon mdi-close
+
   v-row(justify="center")
     v-col(cols="12" sm="8" md="4")
       v-form.mb-3(ref="form" v-model="valid" lazy-validation)
