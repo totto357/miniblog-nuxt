@@ -31,10 +31,6 @@ export class User {
     this.blogUrl = json.blogUrl || ""
   }
 
-  static fromDoc() {
-
-  }
-
   toJson(): UserJson {
     return {
       id: this.id,

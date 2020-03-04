@@ -1,8 +1,8 @@
 import { Mutation, Action, VuexModule, Module } from "vuex-module-decorators"
 import { db } from "@/plugins/firebase"
 
-import { StatusJson, Status } from "~/domain/models/Status"
-import { UserDocumentSnapshot, User } from "~/domain/models/User"
+import { StatusJson, Status } from "@/domain/models/Status"
+import { UserDocumentSnapshot, User } from "@/domain/models/User"
 import { DocumentReference } from "@google-cloud/firestore"
 
 const TIMELINE_LOAD_LIMIT = 30
@@ -108,7 +108,7 @@ export default class TimelineModule extends VuexModule {
   async postStatus(params: { text: string, currentUser: User }) {
     const uid = params.currentUser.id
     const currentUserRef = db.collection("users").doc(uid)
-    currentUserRef.collection("statuses").add({
+    return currentUserRef.collection("statuses").add({
       text: params.text,
       createdAt: new Date(),
       authorRef: currentUserRef,
