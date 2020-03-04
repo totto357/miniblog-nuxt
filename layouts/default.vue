@@ -1,7 +1,5 @@
 <template lang="pug">
 v-app#app
-  v-overlay(:value="!isReady")
-
   app-header
   drawer
 
@@ -24,9 +22,6 @@ import { authModule } from "@/store"
   }
 })
 export default class extends Vue {
-  get isReady() {
-    return authModule.ready
-  }
 }
 </script>
 
