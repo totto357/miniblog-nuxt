@@ -17,7 +17,7 @@
   "devDependencies": {
     "@nuxt/typescript-build": "^0.5.7",
     "@nuxtjs/vuetify": "^1.11.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "nuxt-property-decorator": "^2.5.1",
     "pug": "^2.0.4",
     "pug-plain-loader": "^1.0.0",
